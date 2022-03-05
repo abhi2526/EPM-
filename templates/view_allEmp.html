@@ -1,0 +1,406 @@
+{% extends 'base.html'%}
+{% load thumbnail %}
+{%block contant%}
+
+
+
+<div id="content" class="main-body">
+
+    <div class="d-flex align-items-center pb-3">
+        <div>
+            <!-- Title -->
+            <h1>Employees</h1>
+            <!-- End Title -->
+            <!--breadcrum start-->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb pmd-breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Employees</li>
+                </ol>
+            </nav>
+            <!--breadcrum end-->
+        </div>
+
+        <!-- Right Buttons -->
+        <div class="ml-auto d-flex">
+            <ul class="nav nav-tabs border-0">
+                <li class="nav-item mr-2">
+                    <a title="Grid View"
+                        class="btn pmd-btn-fab pmd-ripple-effect nav-link active btn-sm btn-outline-dark"
+                        href="#gridView" aria-controls="gridView" role="tab" data-toggle="tab">
+                        <i class="material-icons">apps</i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a title="List View" class="btn btn-outline-dark pmd-btn-fab pmd-ripple-effect nav-link btn-sm"
+                        href="#listView" aria-controls="listView" role="tab" data-toggle="tab">
+                        <i class="material-icons">format_list_bulleted</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- Right Buttons End -->
+    </div>
+
+    <section class="component-section" id="employee">
+        <div class="card pmd-card">
+            <div class="search-bar card-body">
+                <div class="row d-flex align-items-center">
+                    <div class="col">
+                        <!-- Form Component -->
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                        <div class="d-md-block">
+                            <form class="search-form" style="margin-top: -10px;">
+                                <div class="form-row">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group pmd-input-group pmd-input-group-icon  mb-0">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="material-icons md-dark pmd-sm">search</i>
+                                                </div>
+                                            </div>
+                                            <div class="pmd-textfield pmd-textfield-floating-label">
+                                                
+                                                <input type="text" placeholder="Enter Employee Name" class="form-control" required name="text"id="search-field"
+                                                    aria-describedby="search-field" style="width: 100%;"><span
+                                                    class="pmd-textfield-focused"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group pmd-textfield pmd-textfield-floating-label col-md-3 mb-0">
+                                        
+                                        <select name="mainDept" id="selectcountries"   class="form-control" data-fees-url="{% url 'load_subDept' %}">
+                                            <option  value="{{i.id}}">Select Department</option>
+                                            {%for i in dept%}
+                                            <option  value="{{i.id}}">{{i}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <span class="pmd-textfield-focused"></span>
+                                    </div>
+                                    <div class="form-group pmd-textfield pmd-textfield-floating-label col-md-3 mb-0">
+                                        
+                                       
+                                        <select name="total_fee" id="select3"   class="form-control">
+                                            <option  value="{{i.id}}">Select Sub Department</option>
+
+                                        </select>
+                                       
+                                        
+                                        <span class="pmd-text field-focused"></span>
+                                    </div>
+                                    <div class="col-md-1 col-lg-2 ">
+                                        <input type="submit" value="Go" class="btn bg-info pmd-ripple-effect pmd-btn-raised"
+                                            id="search">
+                                    </div>
+                                </div>
+                            </form>
+
+                            
+                        </div>
+                    </form>
+                        
+                    </div>
+                    <!-- Right Menu -->
+
+                </div>
+                <!-- Advance Search Form -->
+
+
+                <!-- Filter Tags -->
+
+            </div>
+            
+        </div>
+
+            <div class="tab-content">
+                <!-- Grid View -->
+                <div role="tabpanel" class="tab-pane active" id="gridView">
+                    <div class="row">
+                        {%for e in emp%}
+                        <div class="col-md-6 col-xl-4 col-12">
+                            <!-- Card Component -->
+
+                            <div class="card pmd-card user-info-card">
+                                <!-- Card Header -->
+
+                                <div class="card-header pmd-card-border d-flex flex-row align-items-center">
+                                    <a class="pmd-avatar-list-img" href="javascript:void(0);">
+                                        {% thumbnail e.pic "40x40" crop="center" as im %}
+                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                            alt="Profile Picture">
+                                        {% endthumbnail %}
+
+                                    </a>
+                                    <div class="ml-4 media-body">
+                                        <h3 class="card-title">{{e.ename}}</h3>
+                                        <p class="card-subtitle">{{e.Designation}}</p>
+                                    </div>
+
+                                </div>
+
+                                <!-- List Group Component -->
+
+                                <ul class="list-group pmd-list">
+                                    <li class="list-group-item d-flex flex-row">
+                                        <i
+                                            class="material-icons pmd-list-icon align-self-center pmd-md md-dark">person_outline</i>
+                                        <div class="media-body">
+                                            <label class="pmd-list-subtitle  ml-4">Employee ID</label>
+                                            <p class="pmd-list-title  ml-4">{{e.id}}</p>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex flex-row">
+                                        <i
+                                            class="material-icons pmd-list-icon align-self-center pmd-md md-dark">call</i>
+                                        <div class="media-body">
+                                            <label class="pmd-list-subtitle mb-0  ml-4">Phone No.</label>
+                                            <p class="pmd-list-title  ml-4">{{e.phone}}</p>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex flex-row">
+                                        <i
+                                            class="material-icons pmd-list-icon align-self-center pmd-md md-dark">people_outline</i>
+                                        <div class="media-body">
+                                            <label class="pmd-list-subtitle ml-4">FatherName</label>
+                                            <p class="pmd-list-title "><a class=" ml-4"
+                                                    >{{e.father_name}}</a>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex flex-row">
+                                        <i
+                                            class="material-icons pmd-list-icon align-self-center pmd-md md-dark">people_outline</i>
+                                        <div class="media-body">
+                                            <label class="pmd-list-subtitle  ml-4">Department</label>
+                                            <p class="pmd-list-title  ml-4">{{e.subDept}}</p>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex flex-row">
+                                        <i
+                                            class="material-icons pmd-list-icon align-self-center pmd-md md-dark">today</i>
+                                        <div class="media-body">
+                                            <label class="pmd-list-subtitle  ml-4">Date of Joining</label>
+                                            <p class="pmd-list-title  ml-4">{{e.date}}</p>
+                                        </div>
+                                    </li>
+                                </ul><!-- List Group Component End -->
+
+                                <!-- Card Footer -->
+                                <div class="card-footer pmd-card-border">
+                                    <a title="View More" href="{% url 'detail_view' e.id %}"
+                                        class="btn pmd-btn-flat pmd-ripple-effect btn-light">View More</a>
+                                </div>
+                            </div>
+                            <!-- Card Component End -->
+                        </div>
+                        {%endfor%}
+
+
+                        <div class="col-12 text-center">
+                            <button class="btn btn-secondary pmd-ripple-effect">Load More</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Grid View End -->
+
+                <!-- List View Start -->
+                <div role="tabpanel" class="tab-pane" id="listView">
+                    <div class="card pmd-card">
+                        <!-- Table -->
+                        <table id="example" class="table pmd-table table-hover display dt-responsive nowrap"
+                            cellspacing="0" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>ID</th>
+                                    <th>Phone No</th>
+                                    <th>Email Address</th>
+                                    <th>Department</th>
+                                    <th>Date of Joining</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for e in emp%}
+                                <tr>
+                                    <td data-title="Name">
+                                        <div class="d-flex align-items-center">
+                                            {% thumbnail e.pic "40x40" crop="center" as im %}
+                                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                                alt="Profile Picture">
+                                            {% endthumbnail %}
+                                            <div class="media-body ml-4">
+                                                {{e.ename}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td data-title="Designation " class="ml-4">{{e.designation}}</td>
+                                    <td data-title="ID"class="ml-4">{{e.id}}</td>
+                                    <td data-title="Phone No"class="ml-4">{{e.phone}}</td>
+                                    <td data-title="Email Address"class="ml-4"><a
+                                            >{{e.father_name}}</a>
+                                    </td>
+                                    <td data-title="Department"class="ml-4">{{e.subDept}}</td>
+                                    <td data-title="Date of Joining"class="ml-4">{{e.date}}</td>
+                                    <td data-title="">
+                                        <a href="employee-detail.html"
+                                            class="btn pmd-btn-fab pmd-btn-flat btn-primary pmd-ripple-effect btn-sm mr-2"><i
+                                                class="material-icons pmd-sm">visibility</i></a>
+                                        <a href="employee-detail.html"
+                                            class="btn pmd-btn-fab pmd-btn-flat btn-dark pmd-ripple-effect btn-sm mr-2"><i
+                                                class="material-icons pmd-sm">edit</i></a>
+                                        <a href="javascript:void(0);" title="Delete"
+                                            class="btn pmd-btn-fab pmd-btn-flat btn-danger pmd-ripple-effect btn-sm"
+                                            data-toggle="modal" data-target="#delete_employee_modal"><i
+                                                class="material-icons pmd-sm">delete_outline</i></a>
+                                    </td>
+                                </tr>
+                                {%endfor%}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- List View End -->
+            </div>
+    </section>
+</div>
+<!-- content area end -->
+
+<!-- Footer Starts -->
+<footer class="pmd-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 align-self-center">
+                <div class="pmd-site-info">
+                    � <span class="auto-update-year"></span> A <a href="https://pro.propeller.in/"
+                        target="_blank"><strong>ZohaibYousaf </strong></a> Employee Management System
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Ends -->
+
+<!--<div class="menu list-view pmd-floating-action"  role="navigation">
+    <a class="pmd-floating-action-btn btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-secondary" data-title="Add Employee" href="add-employee.html">
+        <i class="material-icons pmd-sm">add</i> 
+    </a>
+</div>-->
+
+<!-- Delete Employee Modal -->
+<div class="modal pmd-modal fade text-center delete-modal" id="delete_employee_modal" tabindex="-1" role="dialog"
+    aria-labelledby="delete_employee_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <i
+                    class="material-icons md-danger pmd-icon-circle bg-danger pmd-icon-md"><strong>error_outline</strong></i>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <h2 class="modal-title">Are you sure?</h2>
+                <p>Do you really want to delete the employee details? <br /> This process cannot be undone.</p>
+                <a href="javascript:void(0);" class="btn btn-outline-dark pmd-btn-raised" title="Cancel"
+                    data-dismiss="modal">Cancel</a>
+                <a href="javascript:void(0);" class="btn btn-primary pmd-btn-raised" title="Delete">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advance Search Modal -->
+
+<!-- Advance Search Modal End -->
+
+<!-- Sort Modal -->
+<div tabindex="-1" class="modal pmd-modal fade add-dialog" id="sort-modal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header pmd-modal-border">
+                <h2 class="modal-title">Sort By</h2>
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">�</button>
+            </div>
+            <div class="modal-body">
+                <div class="custom-control custom-radio pmd-radio">
+                    <input class="custom-control-input" type="radio" value="" id="Name">
+                    <label class="custom-control-label pmd-radio-ripple-effect" for="Name">
+                        Name
+                    </label>
+                </div>
+                <div class="custom-control custom-radio pmd-radio">
+                    <input class="custom-control-input" type="radio" value="" id="Department">
+                    <label class="custom-control-label pmd-radio-ripple-effect" for="Department">
+                        Department
+                    </label>
+                </div>
+                <div class="custom-control custom-radio pmd-radio">
+                    <input class="custom-control-input" type="radio" value="" id="Date-of-Joining">
+                    <label class="custom-control-label pmd-radio-ripple-effect" for="Date-of-Joining">
+                        Date of Joining
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{%block script%}
+
+
+<!-- /build -->
+
+<script>
+    $(document).ready(function(){
+                 $('select#selectcountries').change(function () {
+                     var optionSelected = $(this).find("option:selected");
+                     var valueSelected  = optionSelected.val();
+                     
+                     $.ajax({                       // initialize an AJAX request
+                    url: 'load_subDept',                    // set the url of the request
+                    data: {
+                    'DepartmentId': valueSelected,
+                    'page':"view"       // add the course pk to the GET parameters
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#select3').html(data);
+                          // `data` is the return of the `ajax_course_fees` view function
+                         // replace the contents of the fees select with the data that came from the server
+                    }
+                });
+
+                     
+                 });
+            });
+    
+</script>
+<script type="text/javascript">
+
+            // Advanced Search Toggle
+            $("#advanced-search-toggler").click(function () {
+                $(".search-form").toggle();
+                $(".advanced-search-title").toggle();
+            });
+
+            // Filter Tags Toggle
+            $("#apply-filter").click(function () {
+                $(".filter-tags").show();
+            });
+            // $("#search").click(function(){
+            //     $(".filter-tags").show();
+            // });
+
+            // Date of Joining Datepicker
+            $('#datepicker').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+
+</script>
+
+{%endblock%}

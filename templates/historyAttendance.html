@@ -1,0 +1,454 @@
+{% extends 'base.html'%}
+
+{%block head%}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="static/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css">
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <title>Dashboard-HRMS admin template</title>
+    <link href="./static/css/app.f9b5f142b1c6e38571a6c7c618fa1936.css" rel="stylesheet">
+    <style type="text/css">
+        .morris-hover {
+            position: absolute;
+            z-index: 1000
+        }
+
+        .morris-hover.morris-default-style {
+            border-radius: 10px;
+            padding: 6px;
+            color: #666;
+            background: hsla(0, 0%, 100%, .8);
+            border: 2px solid hsla(0, 0%, 90%, .8);
+            font-family: sans-serif;
+            font-size: 12px;
+            text-align: center
+        }
+
+        .morris-hover.morris-default-style .morris-hover-row-label {
+            font-weight: 700;
+            margin: .25em 0
+        }
+
+        .morris-hover.morris-default-style .morris-hover-point {
+            white-space: nowrap;
+            margin: .1em 0
+        }
+    </style>
+</head>
+{%endblock%}
+{%block contant%}
+
+
+<div class="card pmd-card">
+    <div class="search-bar card-body">
+        <div class="row d-flex align-items-center">
+            <div class="col">
+                <!-- Form Component -->
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="d-md-block">
+                        <form class="search-form" style="margin-top: -10px;">
+                            <div class="form-row ">
+                                <div class="col-md-4 col-lg-3">
+                                    <div class="input-group pmd-input-group pmd-input-group-icon  mb-0">
+                                        <div class="input-group-prepend">
+
+                                        </div>
+                                        <div class="pmd-textfield pmd-textfield-floating-label" >
+                                            <select name="month" class="form-control" style="width: 110%;margin-left:5%">
+                                            <option value="">Select Attecndace Months</option>
+                                            {%for i in months%}
+                                            <option value="{{i.id}}">{{i.month}}</option>
+                                            {%endfor%}
+                                        </select>
+                                            
+                                               
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group pmd-textfield pmd-textfield-floating-label col-md-3 mb-0">
+
+                                    <select name="mainDept" id="selectcountries" class="form-control"
+                                        data-fees-url="{% url 'load_subDept' %}">
+                                        <option value="{{i.id}}">Select Department</option>
+                                        {%for i in dept%}
+                                        <option value="{{i.id}}">{{i}}</option>
+                                        {%endfor%}
+                                    </select>
+                                    <span class="pmd-textfield-focused"></span>
+                                </div>
+                                <div class="form-group pmd-textfield pmd-textfield-floating-label col-md-3 mb-0">
+
+
+                                    <select name="dept" required id="select3" class="form-control"style=" margin-left:10%">
+                                        <option value="{{i.id}}">Select Sub Department</option>
+
+                                    </select>
+
+
+                                    <span class="pmd-text field-focused"></span>
+                                </div>
+                                <div class="col-md-1 col-lg-2 ">
+                                    <input type="submit" value="Go" class="btn bg-info pmd-ripple-effect pmd-btn-raised"
+                                        id="search" style="width: 60%; margin-left:40%">
+                                   
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </form>
+                
+            </div>
+            <!-- Right Menu -->
+
+        </div>
+        <!-- Advance Search Form -->
+
+
+        <!-- Filter Tags -->
+
+    </div>
+
+</div>
+
+
+
+<div class="row">
+    <div class="col-lg-12  col-12">
+        <div class="table-responsive">
+            <table id="empTable" class="table table-striped custom-table table-nowrap mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        {%if date%}
+                        <th id="todayDate" value="{{date}}">{{date}}</th>
+                        {%else%}
+                        <th>Attecndace</th>
+                        {%endif%}
+                        {%for d in dates%}
+                        <th class="text-center">
+                            <h5>{{d}}</h5>
+                        </th>
+                        {%endfor%}
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for emp in emps%}
+                    <tr>
+
+                        <td class="empName">
+                            <h2 class="table-avatar text-center">
+                                <a value="{{emp.id}}" class="empId">{{emp.id}}
+
+                                </a>
+
+                            </h2>
+
+                        </td>
+
+
+                        <td class="">
+                            <h2 class="table-avatar text-center">
+                                <a value="{{emp.id}}" class="empId" data-toggle="tooltip" data-placement="right"
+                                    title=" Presents:{{emp.emp_present_count}}  Absents:{{emp.emp_Absent_count}} Reset:{{emp.emp_Reset_count}}">{{emp.ename}}
+
+                                </a>
+
+                            </h2>
+
+                        </td>
+                        <td>
+                            <select class="form-control" id="status" required>
+                                <option value="P">Present</option>
+                                <option value="A">Absent</option>
+                                <option value="R">Reset</option>
+
+
+                            </select>
+                        </td>
+                        {%for st in emp.get_monthly_att%}
+                        <td class="border">
+                            {%if 'P' == st.status %}
+
+                            <i class=" text-success text-center">
+                                <h4>{{st.status}}</h4>
+                            </i>
+                            <small class="border text-primary">{{st.date}}</small>
+                            {%else%}
+                            {%if 'R' == st.status%}
+
+                            <i class=" text-info text-center">
+                                <h4>{{st.status}}</h4>
+                            </i>
+                            <small class="border text-primary">{{st.date}}</small>
+                            {%else%}
+
+                            <i class=" text-danger text-center">
+                                <h4>{{st.status}}</h4>
+                            </i>
+                            <small class="border text-primary">{{st.date}}</small>
+                            {%endif%}
+
+                            {%endif%}
+
+
+
+                        </td>
+                        {% if forloop.last %}
+                        {%for dash in emp.emp_count%}
+                        <td><i class=" text-info text-center">
+                                <h3>_</h3>
+                            </i></td>
+
+                        {%endfor%}
+                        {%endif%}
+
+
+                        {%endfor%}
+
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <input type="submit" onclick="showTableData()" class="form-control tn btn-success btn-skew">
+</div>
+
+
+
+
+
+
+<script type="text/javascript" src="./static/js/manifest.3ad1d5771e9b13dbdad2.js"></script>
+<script type="text/javascript" src="./static/js/vendor.e9d6d4690d9b45a301fa.js"></script>
+<script type="text/javascript" src="./static/js/app.f46de48ad2da14bfe590.js"></script>
+<div class="sidebar-overlay"></div>
+
+
+{%endblock%}
+{%block script%}
+
+
+<!-- /build -->
+
+<script>
+    $(document).ready(function () {
+        $('select#selectcountries').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            var valueSelected = optionSelected.val();
+
+            $.ajax({                       // initialize an AJAX request
+                url: 'load_subDept',                    // set the url of the request
+                data: {
+                    'DepartmentId': valueSelected,
+                    'page': "view"       // add the course pk to the GET parameters
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#select3').html(data);
+                    // `data` is the return of the `ajax_course_fees` view function
+                    // replace the contents of the fees select with the data that came from the server
+                }
+            });
+
+
+        });
+    });
+
+</script>
+<script type="text/javascript">
+
+    // Advanced Search Toggle
+    $("#advanced-search-toggler").click(function () {
+        $(".search-form").toggle();
+        $(".advanced-search-title").toggle();
+    });
+
+    // Filter Tags Toggle
+    $("#apply-filter").click(function () {
+        $(".filter-tags").show();
+    });
+    // $("#search").click(function(){
+    //     $(".filter-tags").show();
+    // });
+
+    // Date of Joining Datepicker
+    $('#datepicker').datetimepicker({
+        format: 'DD-MM-YYYY'
+    });
+    $("#popover").popover({ trigger: "hover" });
+    function getToken(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showTableData() {
+        var myTab = document.getElementById('empTable');
+        var csrftoken = getToken('csrftoken')
+        // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+        var list = []
+        for (i = 1; i < myTab.rows.length; i++) {
+
+            var c = myTab.rows[i].cells[0].childNodes[1]
+            var op = myTab.rows[i].cells[2].childNodes[1]
+            var id = c.childNodes[1].getAttribute("value")
+            var valueSelected = op.value;
+            var dict = { 'id': id, 'status': valueSelected }
+            list.push(dict)
+
+        }
+
+        var date = document.getElementById('todayDate').innerHTML
+        console.log(list)
+        var jsonText = JSON.stringify(list);
+        $.ajax({                       // initialize an AJAX request
+            url: 'submibt_Attendance',
+            // set the url of the request
+            data: {
+                'list': jsonText,
+                'date': date
+            },
+
+            success: function (data) {
+
+
+                document.getElementById('setStatus').innerHTML = data;
+                $("#exampleModalCenter").modal('show');
+                //document.getElementById("myForm").reset();
+               
+                    setTimeout(function () {
+                        location.reload()
+                    }, 2000);
+                
+
+
+
+
+
+            }
+        });
+
+
+
+
+    }
+    function UpdateEmployeeStatus()
+    {
+        var newStatus=document.getElementById('getstatus').value
+        var id=document.getElementById('AttendanceID').text
+        
+        console.log(id,newStatus)
+        $.ajax({
+            url:'UpdateEmpStatus',
+            data:{
+                'id':id,
+                'newStatus':newStatus
+            },
+            success:function(data)
+            {
+                document.getElementById("textAboutUpdate").classList.add("text-success");
+                document.getElementById('textAboutUpdate').innerHTML=data ;
+                getData();
+            }
+
+
+
+        });
+    }
+    function getData()
+    {
+        var date=document.getElementById('update_date').value;
+        var id=document.getElementById('empIDforUpdate').value;
+        if (date !='' && id !='')
+        {
+            $.ajax({                       // initialize an AJAX request
+                url: 'getDataForUpdate',
+                // set the url of the request
+                data: {
+                    'id': id,
+                    'date': date
+                },
+    
+                success: function (data) {
+                    
+                       if (data=='Result Not Found')
+                    {
+                        document.getElementById("Update_Info_Btn").disabled=true
+                        alert(data)
+                    }
+                    else
+                    {
+                        document.getElementById("getstatus").removeAttribute("hidden")
+                        
+                        var d=JSON.parse(data)
+                        finalData=Object.values(d[0])
+                        console.log(finalData)
+                        
+                        document.getElementById('setId').innerHTML=finalData[1]
+                        document.getElementById('setName').innerHTML=d[1]
+                        //AttendanceID
+                        
+                        document.getElementById('setpreviusStatus').innerHTML=finalData[3]
+                        document.getElementById('AttendanceID').innerHTML=finalData[0]
+                        days=parseInt(d[2])
+                        document.getElementById('textAboutUpdate').innerHTML="Attendance Changeable" 
+                        if(days<=3)
+                            
+                        {   document.getElementById("textAboutUpdate").classList.add("text-success");
+                            document.getElementById('textAboutUpdate').innerHTML="Attendance Changeable" ;
+                            document.getElementById("Update_Info_Btn").removeAttribute("disabled")
+                        }
+                        else
+                        {
+                            document.getElementById("Update_Info_Btn").disabled=true
+                            document.getElementById("textAboutUpdate").classList.add("text-danger");
+                            document.getElementById('textAboutUpdate').innerHTML="Attendance change withing 3 Days" 
+                        }
+                        
+
+                    }
+                    
+                    //setStatus getstatus setNamesetId
+                }
+            });
+        }
+        else
+        {
+            document.getElementById("Update_Info_Btn").disabled=true
+            alert("All Fields Are Required")
+        }
+        
+    }
+
+    
+
+
+</script>
+
+{%endblock%}
